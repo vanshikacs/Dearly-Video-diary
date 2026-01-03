@@ -1,13 +1,341 @@
-body {
+/* Love letter card border - exact match to reference */
+  .letter-card {
+    position: relative;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(255, 250, 252, 0.9) 100%
+    );
+    border: 3px solid #C84B5C;
+    border-radius: 8px;
+    padding: 2.5rem;
+    box-shadow: 
+      0 8px 32px rgba(200, 75, 92, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+  
+  .letter-card::before {
+    content: '';
+    position: absolute;
+    inset: -12px;
+    border-radius: 12px;
+    padding: 12px;
+    background: repeating-linear-gradient(
+      -45deg,
+      #C84B5C 0px,
+      #C84B5C 8px,
+      #F9DFE3 8px,
+      #F9DFE3 16px
+    );
+    -webkit-mask: 
+      linear-gradient(#fff 0 0) content-box, 
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+  
+  /* Postal stamp decoration in corners */
+  .letter-card::after {
+    content: '';
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 60px;
+    height: 60px;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='5' y='5' width='50' height='50' fill='%23FFE4E1' stroke='%23C84B5C' stroke-width='2' stroke-dasharray='3 3'/%3E%3Cpath d='M20 25 L30 20 L40 25 L30 30 Z' fill='%23C84B5C' opacity='0.3'/%3E%3Ccircle cx='30' cy='35' r='8' fill='%23F9DFE3'/%3E%3Cpath d='M25 35 Q30 40 35 35' stroke='%23C84B5C' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+    background-size: contain;
+    opacity: 0.4;
+    pointer-events: none;
+  }  /* Vintage postal stamp decoration */
+  .postal-stamp {
+    position: relative;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, rgba(200, 75, 92, 0.08), rgba(232, 180, 188, 0.12));
+    border: 2px dashed rgba(200, 75, 92, 0.3);
+    border-radius: 4px;
+  }
+  
+  .postal-stamp::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    background: 
+      radial-gradient(circle at 0 0, transparent 3px, rgba(200, 75, 92, 0.1) 3px, rgba(200, 75, 92, 0.1) 4px, transparent 4px),
+      radial-gradient(circle at 100% 0, transparent 3px, rgba(200, 75, 92, 0.1) 3px, rgba(200, 75, 92, 0.1) 4px, transparent 4px),
+      radial-gradient(circle at 0 100%, transparent 3px, rgba(200, 75, 92, 0.1) 3px, rgba(200, 75, 92, 0.1) 4px, transparent 4px),
+      radial-gradient(circle at 100% 100%, transparent 3px, rgba(200, 75, 92, 0.1) 3px, rgba(200, 75, 92, 0.1) 4px, transparent 4px);
+    background-size: 8px 8px;
+    background-position: 0 0, 100% 0, 0 100%, 100% 100%;
+    background-repeat: repeat-x, repeat-x, repeat-x, repeat-x;
+    pointer-events: none;
+  }
+  
+  /* Envelope border effect */
+  .envelope-border {
+    border: 3px solid transparent;
+    background-image: 
+      linear-gradient(white, white),
+      repeating-linear-gradient(
+        45deg,
+        #E8B4BC 0px,
+        #E8B4BC 10px,
+        #F9DFE3 10px,
+        #F9DFE3 20px
+      );
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+  }
+  
+  /* Preserve warm brown tones for Monthly Letters section */
+  .monthly-letter-text {
+    color: #6B4A52 !important;
+  }
+  
+  .monthly-letter-heading {
+    color: #8B7355 !important;
+  }
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=DM+Sans:wght@400;500;600&family=Caveat:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Test styles - if you see red, CSS is working */
+* {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+@layer base {
+  * {
+    @apply antialiased;
+  }
+  
+  body {
+    @apply font-body overflow-x-hidden;
+    color: #8B5963; /* Refined body text color - softer rose-brown */
+    min-height: 100vh;
+    background: linear-gradient(
+      180deg,
+      #FFF8F3 0%,
+      #FFF5F7 15%,
+      #FFE8EC 35%,
+      #FFE0E8 50%,
+      #FFD8E4 70%,
+      #FFE8EC 85%,
+      #FFF5F7 100%
+    );
+    position: relative;
+  }
+  
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      /* Soft radial glows */
+      radial-gradient(circle at 15% 20%, rgba(255, 182, 193, 0.08) 0%, transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(255, 218, 224, 0.1) 0%, transparent 40%),
+      radial-gradient(circle at 50% 50%, rgba(255, 240, 245, 0.06) 0%, transparent 50%),
+      /* Subtle diagonal stripes */
+      repeating-linear-gradient(
+        135deg,
+        transparent,
+        transparent 80px,
+        rgba(255, 192, 203, 0.02) 80px,
+        rgba(255, 192, 203, 0.02) 160px
+      ),
+      /* Fine paper texture */
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 4px,
+        rgba(200, 75, 92, 0.008) 4px,
+        rgba(200, 75, 92, 0.008) 8px
+      );
+    pointer-events: none;
+    z-index: 0;
+  }
+  
+  h1, h2, h3 {
+    @apply font-bubble;
+  }
+}
+
+@layer components {
+  /* Scalloped dividers */
+  .scallop-top {
+    position: relative;
+  }
+  
+  .scallop-top::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 1200 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,30 Q20,10 40,30 T80,30 T120,30 T160,30 T200,30 T240,30 T280,30 T320,30 T360,30 T400,30 T440,30 T480,30 T520,30 T560,30 T600,30 T640,30 T680,30 T720,30 T760,30 T800,30 T840,30 T880,30 T920,30 T960,30 T1000,30 T1040,30 T1080,30 T1120,30 T1160,30 T1200,30 L1200,0 L0,0 Z' fill='%23F9DFE3'/%3E%3C/svg%3E");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+  }
+  
+  .scallop-bottom {
+    position: relative;
+  }
+  
+  .scallop-bottom::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 1200 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,10 Q20,30 40,10 T80,10 T120,10 T160,10 T200,10 T240,10 T280,10 T320,10 T360,10 T400,10 T440,10 T480,10 T520,10 T560,10 T600,10 T640,10 T680,10 T720,10 T760,10 T800,10 T840,10 T880,10 T920,10 T960,10 T1000,10 T1040,10 T1080,10 T1120,10 T1160,10 T1200,10 L1200,40 L0,40 Z' fill='%23F9DFE3'/%3E%3C/svg%3E");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+  }
+  
+  /* Vintage paper texture overlay */
+  .paper-grain {
+    position: relative;
+  }
+  
+  .paper-grain::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      /* Fine paper grain */
+      repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(139, 89, 99, 0.012) 3px, rgba(139, 89, 99, 0.012) 6px),
+      repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(139, 89, 99, 0.008) 3px, rgba(139, 89, 99, 0.008) 6px),
+      /* Subtle vintage spots */
+      radial-gradient(circle at 20% 30%, rgba(232, 180, 188, 0.02) 0%, transparent 3%),
+      radial-gradient(circle at 80% 70%, rgba(232, 180, 188, 0.015) 0%, transparent 3%);
+    opacity: 0.8;
+    pointer-events: none;
+  }
+  
+  /* Gentle card style - pink envelope inspired with better blending */
+  .card-gentle {
+    backdrop-filter: blur(12px);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.85) 0%,
+      rgba(255, 248, 250, 0.75) 50%,
+      rgba(255, 245, 247, 0.8) 100%
+    );
+    @apply rounded-puffy p-8 border-2;
+    border-color: rgba(255, 192, 203, 0.25);
+    box-shadow: 
+      0 8px 32px rgba(255, 182, 193, 0.12),
+      0 2px 8px rgba(255, 192, 203, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  .card-gentle:hover {
+    box-shadow: 
+      0 12px 48px rgba(255, 182, 193, 0.18),
+      0 4px 16px rgba(255, 192, 203, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    @apply -translate-y-1;
+    border-color: rgba(255, 182, 193, 0.35);
+  }
+  
+  /* Cloud-shaped cards - softer pink with seamless blending */
+  .card-cloud {
+    backdrop-filter: blur(10px);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 232, 236, 0.6) 0%,
+      rgba(255, 245, 247, 0.5) 100%
+    );
+    @apply rounded-cloud p-8 border-2;
+    border-color: rgba(255, 192, 203, 0.3);
+    box-shadow: 0 6px 24px rgba(255, 192, 203, 0.1);
+  }
+  
+  /* Bubble heading style - romantic rose-crimson ink */
+  .heading-bubble {
+    @apply font-bubble text-5xl md:text-7xl tracking-widest;
+    color: #C84B5C;
+    text-shadow: 
+      4px 4px 0 rgba(255, 248, 250, 0.9),
+      -2px -2px 0 rgba(249, 223, 227, 0.7),
+      2px 2px 8px rgba(200, 75, 92, 0.12);
+    letter-spacing: 0.08em;
+  }
+  
+  /* Soft button - vintage stamp inspired */
+  .btn-soft {
+    @apply px-8 py-4 text-white rounded-full font-medium;
+    background: linear-gradient(135deg, #C84B5C 0%, #A8384A 100%);
+    box-shadow: 
+      0 4px 16px rgba(200, 75, 92, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  .btn-soft:hover {
+    background: linear-gradient(135deg, #D4586A 0%, #B84458 100%);
+    box-shadow: 
+      0 6px 24px rgba(200, 75, 92, 0.35),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    @apply scale-105;
+  }
+  
+  /* Gentle outline button */
+  .btn-outline-soft {
+    @apply px-6 py-3 border-2 rounded-full font-medium;
+    color: #C84B5C;
+    border-color: #E8B4BC;
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  .btn-outline-soft:hover {
+    @apply text-white;
+    background-color: #C84B5C;
+    border-color: #C84B5C;
+    box-shadow: 0 4px 16px rgba(200, 75, 92, 0.2);
+  }
+}
+
+@layer utilities {
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hidden::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .scrollbar-hidden {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Custom soft scrollbar - pink themed */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FFF5F7;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #E8B4BC;
+  border-radius: 5px;
+  border: 2px solid #FFF5F7;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #D4949F;
+}
+
+/* Selection - soft pink */
+::selection {
+  background: rgba(232, 180, 188, 0.3);
+  color: inherit;
 }

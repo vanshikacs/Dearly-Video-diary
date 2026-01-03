@@ -1,70 +1,191 @@
-# Getting Started with Create React App
+# 🕊️ Dearly
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+> A gentle place for your memories
 
-## Available Scripts
+Dearly is a private, slow, thoughtful video journal that feels less like an app and more like a quiet corner you trust.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## ✨ Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 🎥 Capture Softly
+- Record video memories with gentle prompts
+- Write alongside your videos with "Dearly," prefix
+- Choose how today feels (not a mood tracker—a feeling observer)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 🌿 Reflections
+- Soft observations about your patterns
+- No metrics, no scores—just gentle noticing
+- Written in human language, not analytics
 
-### `npm test`
+### ✉️ Letters to Self
+- Write to future you
+- Schedule delivery (1 month, 1 year, custom)
+- Envelope-style UI with opening animation
+- "A letter you once wrote, for today"
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 📖 Monthly Letters
+- Narrative letters generated at month's end
+- Emotional themes, not data
+- No charts—just a letter written to you, about your month
 
-### `npm run build`
+### 🎞️ Moments (Real Video Reels)
+- Auto-generate 5-10 second video montages
+- Uses **real FFmpeg.js** processing
+- Soft cross-fades, Ken Burns zoom, date overlays
+- Downloadable as MP4
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🛠️ Tech Stack
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- **React 18** + **Vite**
+- **Framer Motion** (slow, breathing animations)
+- **FFmpeg.js** (real video processing—not placeholders)
+- **IndexedDB** (private, on-device storage)
+- **Tailwind CSS** (custom Dearly aesthetic)
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 📦 Installation
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+# Clone or download the project
+cd dearly
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+# Install dependencies
+npm install
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+# Start development server
+npm run dev
+```
 
-## Learn More
+The app will run at `http://localhost:3000`
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 📁 Complete File Structure
 
-### Code Splitting
+```
+dearly/
+├── index.html
+├── package.json
+├── vite.config.js
+├── tailwind.config.js
+├── postcss.config.js
+├── public/
+│   └── doodles/
+│       ├── star.svg
+│       ├── donut.svg
+│       └── cloud.svg
+└── src/
+    ├── main.jsx
+    ├── App.jsx
+    ├── index.css
+    ├── components/
+    │   ├── Hero.jsx
+    │   ├── CaptureComponent.jsx
+    │   ├── FloatingDoodle.jsx
+    │   ├── GallerySection.jsx
+    │   ├── CloudDividerSection.jsx
+    │   ├── ReflectionsPanel.jsx
+    │   ├── LettersToSelf.jsx
+    │   ├── MonthlyLettersViewer.jsx
+    │   └── MomentsViewer.jsx
+    ├── pages/
+    │   └── Home.jsx
+    └── utils/
+        ├── db.js
+        ├── reflectionsAnalyzer.js
+        ├── monthlyLetterGenerator.js
+        ├── videoProcessor.js (FFmpeg)
+        └── momentGenerator.js
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
+## 🎨 Design Philosophy
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+**This should not feel like an app.**
 
-### Making a Progressive Web App
+It should feel like:
+- A quiet corner
+- A warm café
+- A notebook you trust
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### Key Principles
+- **Slow everything down** — No bounce, no snap, breathing animations only
+- **Soft language** — "Capture softly" not "Record entry"
+- **No judgment** — Reflections observe, they don't analyze
+- **Private by default** — Everything stays on your device
+- **Human-written copy** — Never product language
 
-### Advanced Configuration
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## 🌙 Micro-Copy System
 
-### Deployment
+Always use these phrases:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+| ❌ Don't Say | ✅ Say |
+|-------------|--------|
+| Record entry | Capture softly |
+| Start recording | Begin |
+| Stop recording | Pause |
+| Save entry | Keep this |
+| Journal | Letters |
+| Insights | Reflections |
+| Memory Reel | Moments |
+| Mood picker | How does today feel? |
+| Empty state | Nothing here yet. That's okay. |
 
-### `npm run build` fails to minify
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 🎥 Real Video Processing
+
+**Moments** uses **real FFmpeg.js** to generate video reels:
+
+1. Loads FFmpeg WebAssembly module (first time only)
+2. Selects 5-10 older memories
+3. Trims each to 5 seconds
+4. Applies Ken Burns zoom effect
+5. Adds date + feeling overlays
+6. Stitches with cross-fade transitions
+7. Exports as downloadable MP4
+
+**This is not a mock—it actually processes videos.**
+
+---
+
+## 🚀 Building for Production
+
+```bash
+npm run build
+```
+
+Deploy the `dist/` folder to any static host (Vercel, Netlify, etc.)
+
+---
+
+## 💭 Philosophy Notes
+
+### Why "Dearly"?
+It's how you'd start a letter to someone you care about.  
+In this case, that someone is future you.
+
+### Why so slow?
+Speed implies urgency.  
+This space should feel unrushed.
+
+### Why private?
+Your memories shouldn't be data.  
+Everything stays on your device.
+
+---
+
+## 🌸 Credits
+
+Built with care, slowness, and attention to softness.
+
+---
+
+*Dearly — a gentle place for your memories*
