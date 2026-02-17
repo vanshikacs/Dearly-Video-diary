@@ -1,4 +1,10 @@
-/* Love letter card border - exact match to reference */
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=DM+Sans:wght@400;500;600&family=Caveat:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* rest of your CSS *//* Love letter card border - exact match to reference */
   .letter-card {
     position: relative;
     background: linear-gradient(
@@ -95,11 +101,7 @@
   .monthly-letter-heading {
     color: #8B7355 !important;
   }
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=DM+Sans:wght@400;500;600&family=Caveat:wght@400;700&display=swap');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 /* Test styles - if you see red, CSS is working */
 * {
