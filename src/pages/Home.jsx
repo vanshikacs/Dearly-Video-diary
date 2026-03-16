@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom'; // FIXED: was <a href> causing full page reload
 import Hero from '../components/Hero';
 import CaptureComponent from '../components/CaptureComponent';
 import CloudDividerSection from '../components/CloudDividerSection';
@@ -9,21 +10,19 @@ const Home = () => {
   const [captureKey, setCaptureKey] = useState(0);
 
   const handleCaptureComplete = () => {
-    setCaptureKey(prev => prev + 1);
+    setCaptureKey((prev) => prev + 1);
   };
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Background floating doodles - scattered across entire page with softer colors */}
+      {/* Background floating doodles */}
       <motion.div
         className="fixed top-1/4 left-[5%] w-10 h-10 opacity-15 pointer-events-none z-0"
         style={{ color: '#FFB6C1' }}
         animate={{ y: [0, -30, 0], rotate: [0, 15, 0] }}
         transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
       >
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <circle cx="12" cy="12" r="8" />
-        </svg>
+        <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8" /></svg>
       </motion.div>
 
       <motion.div
@@ -65,15 +64,13 @@ const Home = () => {
         animate={{ y: [0, -20, 0], scale: [1, 1.2, 1] }}
         transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
       >
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <circle cx="12" cy="12" r="6" />
-        </svg>
+        <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6" /></svg>
       </motion.div>
 
       {/* Main content */}
       <div className="relative z-10">
         <Hero />
-        
+
         <section className="py-20 px-6">
           <CaptureComponent key={captureKey} onCaptureComplete={handleCaptureComplete} />
         </section>
@@ -91,15 +88,14 @@ const Home = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
             >
-              <h3 className="text-4xl font-bubble text-ink mb-6">
-                Reflections
-              </h3>
+              <h3 className="text-4xl font-bubble text-ink mb-6">Reflections</h3>
               <p className="text-xl font-hand text-text-soft mb-8 max-w-2xl mx-auto">
                 Patterns noticed gently, without judgment
               </p>
-              <a href="/reflections" className="btn-soft">
+              {/* FIXED: was <a href="/reflections"> causing full page reload */}
+              <Link to="/reflections" className="btn-soft">
                 See your reflections
-              </a>
+              </Link>
             </motion.div>
           </div>
         </section>
@@ -112,12 +108,8 @@ const Home = () => {
           viewport={{ once: true }}
         >
           <div className="max-w-4xl mx-auto px-6">
-            <p className="font-hand text-3xl text-ink mb-4">
-              Dearly
-            </p>
-            <p className="text-text-whisper text-sm">
-              A gentle place for your memories
-            </p>
+            <p className="font-hand text-3xl text-ink mb-4">Dearly</p>
+            <p className="text-text-whisper text-sm">A gentle place for your memories</p>
           </div>
         </motion.footer>
       </div>

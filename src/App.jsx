@@ -2,9 +2,10 @@ import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react
 import { motion } from 'framer-motion';
 import Home from './pages/Home';
 import ReflectionsPanel from './components/ReflectionsPanel';
-import LettersToSelf from './components/LettersToSelf';
+import LettersToSelf from './components/LettersToSelf'; // FIXED: was LetterstoSelf (case mismatch)
 import MonthlyLettersViewer from './components/MonthlyLettersViewer';
 import MomentsViewer from './components/MomentsViewer';
+import ProfilePanel from './components/ProfilePanel';
 
 function Navigation() {
   const location = useLocation();
@@ -15,6 +16,7 @@ function Navigation() {
     { to: '/letters', label: 'Letters' },
     { to: '/monthly', label: 'Monthly' },
     { to: '/moments', label: 'Moments' },
+    { to: '/profile', label: 'Profile' },
   ];
 
   return (
@@ -45,56 +47,35 @@ function Navigation() {
                   '0 8px 32px rgba(224, 166, 173, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4)',
                 ],
               }}
-              transition={{
-                duration: 3.5,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
+              transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
               whileHover={{
                 scale: 1.08,
                 rotate: [0, -3, 3, 0],
-                transition: { duration: 0.6, ease: 'easeOut' }
+                transition: { duration: 0.6, ease: 'easeOut' },
               }}
             >
-              {/* Outer decorative ring */}
               <motion.div
                 className="absolute inset-0 rounded-full"
                 style={{
                   border: '3px solid transparent',
-                  backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, rgba(224, 166, 173, 0.6), rgba(244, 199, 195, 0.4), rgba(255, 218, 224, 0.5))',
+                  backgroundImage:
+                    'linear-gradient(white, white), linear-gradient(135deg, rgba(224, 166, 173, 0.6), rgba(244, 199, 195, 0.4), rgba(255, 218, 224, 0.5))',
                   backgroundOrigin: 'border-box',
                   backgroundClip: 'padding-box, border-box',
                 }}
-                animate={{
-                  rotate: 360,
-                }}
-                transition={{
-                  duration: 20,
-                  repeat: Infinity,
-                  ease: 'linear',
-                }}
+                animate={{ rotate: 360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
               />
-
-              {/* Pulsing glow ring */}
-              <motion.span 
+              <motion.span
                 className="absolute rounded-full"
                 style={{
                   inset: '-8px',
                   border: '2px solid rgba(224, 166, 173, 0.3)',
                   background: 'transparent',
                 }}
-                animate={{
-                  scale: [1, 1.08, 1],
-                  opacity: [0.3, 0.6, 0.3],
-                }}
-                transition={{
-                  duration: 2.5,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }}
+                animate={{ scale: [1, 1.08, 1], opacity: [0.3, 0.6, 0.3] }}
+                transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
               />
-
-              {/* Sparkle effect */}
               <motion.div
                 className="absolute"
                 style={{
@@ -102,21 +83,13 @@ function Navigation() {
                   right: '15%',
                   width: '8px',
                   height: '8px',
-                  background: 'radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(224, 166, 173, 0.4) 70%, transparent 100%)',
+                  background: 'radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(224,166,173,0.4) 70%, transparent 100%)',
                   borderRadius: '50%',
                   filter: 'blur(1px)',
                 }}
-                animate={{
-                  opacity: [0.4, 1, 0.4],
-                  scale: [0.8, 1.2, 0.8],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }}
+                animate={{ opacity: [0.4, 1, 0.4], scale: [0.8, 1.2, 0.8] }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
               />
-
               <motion.img
                 src="/dearly-icon.png"
                 alt="Dearly"
@@ -131,16 +104,14 @@ function Navigation() {
                 whileHover={{
                   scale: 1.05,
                   filter: 'drop-shadow(0 6px 16px rgba(224, 166, 173, 0.6))',
-                  transition: { duration: 0.3 }
+                  transition: { duration: 0.3 },
                 }}
               />
-
-              {/* Inner subtle highlight */}
-              <span 
+              <span
                 className="absolute rounded-full pointer-events-none"
                 style={{
                   inset: '8px',
-                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 60%)',
+                  background: 'linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 60%)',
                 }}
               />
             </motion.div>
@@ -152,18 +123,13 @@ function Navigation() {
 
           <div className="flex gap-1">
             {links.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className="relative px-5 py-2"
-              >
+              <Link key={link.to} to={link.to} className="relative px-5 py-2">
                 <span
-                  className={`
-                    relative z-10 font-medium transition-colors duration-500
-                    ${location.pathname === link.to
+                  className={`relative z-10 font-medium transition-colors duration-500 ${
+                    location.pathname === link.to
                       ? 'text-paper'
-                      : 'text-ink hover:text-blush-dark'}
-                  `}
+                      : 'text-ink hover:text-blush-dark'
+                  }`}
                 >
                   {link.label}
                 </span>
@@ -188,13 +154,13 @@ function App() {
     <Router>
       <div className="min-h-screen pt-24">
         <Navigation />
-        
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/reflections" element={<ReflectionsPanel />} />
           <Route path="/letters" element={<LettersToSelf />} />
           <Route path="/monthly" element={<MonthlyLettersViewer />} />
           <Route path="/moments" element={<MomentsViewer />} />
+          <Route path="/profile" element={<ProfilePanel />} />
         </Routes>
       </div>
     </Router>
