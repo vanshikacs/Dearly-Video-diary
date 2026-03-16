@@ -7,7 +7,7 @@
 
 import { getAllCaptures, getVideoBlob, saveMoment, getProfile, getProfileMusic } from './db';
 import { trimVideo, stitchVideos, applyKenBurns } from './videoProcessor';
-import { resolveAudioBuffer } from './audioEngine';
+import { resolveAudioBuffer } from './Audioengine';
 
 const FEELING_EMOJIS = {
   peaceful: '🕊️', grateful: '🙏', gentle: '🌸', quiet: '🌙',
