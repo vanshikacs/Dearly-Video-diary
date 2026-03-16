@@ -1,277 +1,134 @@
-<div align="center">
+# Dearly
 
-<br />
-
-# 🕊️ Dearly
-
-### *A gentle place for your memories*
-
-<br />
-
-[![Live Demo](https://img.shields.io/badge/Live_Demo-dearly.vercel.app-C84B5C?style=for-the-badge&logoColor=white)](https://dearlywithlove-delta.vercel.app/)
-[![Made with React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://react.dev)
-[![Vite](https://img.shields.io/badge/Vite-5-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev)
-[![License](https://img.shields.io/badge/License-MIT-F4C7C3?style=for-the-badge)](LICENSE)
-
-<br />
-
-> Dearly is a private, slow, thoughtful video journal.  
-> It feels less like an app and more like a quiet corner you trust.
-
-<br />
-
-</div>
+### *A quiet place for the moments you want to keep.*
 
 ---
 
-## What is Dearly?
+I've always found it hard to hold on to ordinary days. Not the big ones — those get photographed and shared. I mean the small ones. A particular afternoon light. The feeling of a walk you didn't think would matter. The version of yourself that existed on a random Tuesday in March.
 
-Most apps want your attention. Dearly just wants to hold your memories.
+Dearly started as a way to build something for that feeling. A video diary that doesn't ask you to perform or summarize or optimize — just to notice, and to save.
 
-You record short video moments — a morning, a walk, a feeling — write a few words alongside them, choose how today feels, and let Dearly keep them safe. At the end of a month, it writes you a letter about the time that passed. You can write letters to your future self. You can generate soft, music-backed reels from your older memories.
+**[→ Try it live at dearly.vercel.app](https://dearly.vercel.app/)**
 
-Everything stays on your device. Nothing is uploaded. Nothing is sold. Nobody sees it but you.
+---
+
+## What it is
+
+Dearly is a private, browser-based video diary. You record short clips, write a few words, tag how you're feeling, and let the app hold onto them. At the end of a month, it writes you a letter about the time that passed. You can write letters to your future self. You can generate soft, music-backed reels from your older memories.
+
+Everything stays on your device — no accounts, no cloud, no one watching. That was important to me from the start.
 
 ---
 
 ## Features
 
-### 🎥 Capture softly
-Record video memories directly in the browser. Write alongside your video with a gentle "Dearly," prompt. Choose how today feels — not a mood tracker, a feeling observer — from options like peaceful, warm, nostalgic, tender, quiet, hopeful.
+**Capture** — Record video moments directly in the browser. Write alongside them. Choose how today feels from a set of soft emotional tags: peaceful, warm, nostalgic, tender, quiet, hopeful, and more.
 
-### 🌿 Reflections
-Soft observations about your patterns, generated from your captures. No metrics, no scores, no percentages. Just gentle noticing — time-of-day patterns, emotional consistency, streaks, quiet shifts over time — written in human language.
+**Gallery** — A visual grid of your captured moments. Hover to play. Click to open.
 
-### ✉️ Letters to self
-Write to future you. Schedule delivery one month, three months, one year, or any custom date from now. The letter waits, sealed. When the date arrives, an envelope appears. You open it.
+**Reflections** — Gentle observations about your patterns over time. Not metrics — more like noticing. Things like: you tend to record in the evenings, or the last few weeks have been quieter than usual.
 
-### 📖 Monthly letters
-At the end of each month, Dearly writes you a narrative letter about the time that passed. Not a summary, not a chart — a letter. It notices your dominant feeling, the time of day you tended to write, whether something shifted from the start to the end of the month.
+**Letters to self** — Write to future you. Set a delivery date — one month, six months, a year, or a custom date. The letter waits. When the time comes, it arrives.
 
-### 🎞️ Moments (video reels)
-Automatically generates a short multi-clip reel from your memories — trimmed, Ken Burns zoomed, soft crossfade transitions, date and feeling overlays, and background music. Built on the Canvas API and Web Audio API. No external services. Fully private. Downloadable.
+**Monthly letters** — At each month's end, Dearly generates a short narrative letter about your captures — your dominant feeling, what shifted, how often you showed up. It reads like something a thoughtful friend might write, not a data report.
 
-### 🎨 Profile & personalization
-Choose your visual theme (Blush, Dusk, Forest, Parchment, Midnight). Set your mood identity. Pick a music vibe and energy level. Preview built-in ambient tracks before setting them as default. Upload your own music. All reel generation — aspect ratio, clip length, transitions, overlay style — follows your profile.
+**Moments** — A reel generation system. Selects clips from your memories, trims them, applies a gentle Ken Burns zoom, adds date and feeling overlays, layers in ambient background music, and stitches everything into a short video you can keep or download.
+
+**Profile** — Visual themes (Blush, Dusk, Forest, Parchment, Midnight), mood identity chips, music preferences, reel format settings, and a couple of personal memory fields that only you'll ever read.
 
 ---
 
 ## Tech stack
 
-| Layer | Technology |
-|---|---|
-| Framework | React 18 + Vite 5 |
-| Routing | React Router v6 |
-| Animation | Framer Motion |
-| Styling | Tailwind CSS |
-| Icons | Lucide React |
-| Storage | IndexedDB via `idb` |
-| Video processing | Canvas API + MediaRecorder |
-| Audio | Web Audio API (procedural synthesis + uploaded files) |
-| Deployment | Vercel / Netlify (static) |
+- **React 18** + **Vite**
+- **React Router v6** for client-side routing
+- **Framer Motion** for animation
+- **Tailwind CSS** for styling
+- **Lucide React** for icons
+- **IndexedDB** (via the `idb` library) for all local storage — videos, letters, moments, profile
+- **Canvas API + MediaRecorder** for video trimming, stitching, and overlay rendering
+- **Web Audio API** for procedural ambient music synthesis and audio mixing into reels
 
-No backend. No database. No API keys. No accounts.
+No backend. No database. No API keys. No environment variables needed.
 
 ---
 
-## Getting started
+## How I thought about it
+
+The hardest part of building Dearly wasn't technical — it was tonal. It's easy to build a video recorder. It's much harder to build one that feels like it respects you.
+
+Every word in the interface went through several versions. "Record entry" became "Capture softly." "Save" became "Keep this." "Mood tracker" became "How does today feel?" These feel like small things, but they're actually the whole product. The difference between an app that feels clinical and one that feels warm usually lives in copy and pacing, not in features.
+
+I also thought a lot about slowness. Most apps are optimized for speed and engagement. Dearly is optimized for the opposite. Animations breathe rather than snap. Nothing bounces. There's no notification, no streak counter, no reason to open the app except that you want to.
+
+The privacy-first decision was also a deliberate design choice, not just a technical one. I didn't want users to feel like their quiet moments were being stored somewhere they couldn't see. Keeping everything in the browser's IndexedDB meant the data is genuinely theirs — which also meant I had to solve some interesting problems around storing video blobs efficiently and handling database version migrations without breaking existing data.
+
+---
+
+## Challenges I worked through
+
+**Video processing in the browser** is genuinely hard. I went through a few approaches before landing on a Canvas + MediaRecorder pipeline that actually works — trimming clips, applying a Ken Burns zoom, rendering text overlays, and stitching multiple clips into one recording session without dropping frames or losing sync.
+
+**Audio mixing into reels** was the trickiest piece. The initial version had no sound at all. Adding music meant decoding audio blobs with `decodeAudioData`, synthesizing built-in ambient tracks procedurally using `OfflineAudioContext`, combining the audio `MediaStream` with the canvas video stream, and fading it in and out gracefully around the recorder lifecycle. Getting that to work reliably across Chrome and Firefox took a lot of debugging.
+
+**Deployment broke in a way I didn't expect.** The import path `LetterstoSelf` worked fine on my Mac, but failed silently on Vercel because Linux file systems are case-sensitive. That kind of bug — where everything looks fine locally and breaks only in production — taught me to be much more careful about file naming consistency.
+
+**React Router on static hosts** also needed explicit configuration. Without a `_redirects` file for Netlify or a `vercel.json` rewrite rule, navigating directly to `/reflections` would return a 404. Small thing, important thing.
+
+**IndexedDB versioning** — when I added the profiles store, I had to bump the database version and write a proper migration so existing users wouldn't hit errors on upgrade. It's not glamorous work, but getting it right matters.
+
+---
+
+## What I learned
+
+I came into this project comfortable with React but much less comfortable with browser APIs. By the end, I'd spent meaningful time with `MediaRecorder`, `AudioContext`, `OfflineAudioContext`, `MediaStream`, `IndexedDB`, and the Canvas 2D rendering pipeline. That was genuinely new territory and I'm glad I went there.
+
+I also learned that frontend product thinking — caring about copy, pacing, emotional tone, empty states, error messages — is a real skill that takes as much thought as the technical side. Maybe more, in a project like this.
+
+And I learned that debugging deployment issues is part of the work, not a distraction from it. Getting something from "works on my machine" to "works reliably in production" is a full step in the process.
+
+---
+
+## What I'd improve
+
+A few things I'd want to come back to:
+
+- **iOS support** — `MediaRecorder` on Safari has limitations that affect recording and reel generation. A proper iOS-compatible fallback would make the app usable for a lot more people.
+- **Data export** — Right now, if you clear your browser storage, your memories are gone. A way to export and import your data (even just a JSON + video zip) would make Dearly feel more trustworthy for long-term use.
+- **Reel quality** — The Canvas approach works, but a WebAssembly-based video encoder would produce significantly better output, especially for 9:16 reels intended for sharing.
+- **Offline PWA** — The app already works offline once loaded, but making it a proper installable PWA with a service worker would feel right for something this personal.
+- **Shared moments** — A way to optionally generate a shareable link for a single moment (without exposing your full diary) would be a meaningful social layer, done carefully.
+
+---
+
+## Run it locally
 
 ```bash
-# Clone the repository
 git clone https://github.com/vanshikacs/Dearly-Video-diary.git
 cd Dearly-Video-diary
-
-# Install dependencies
 npm install
-
-# Start the development server
 npm run dev
 ```
 
-Open `http://localhost:5173` in your browser.
+Open `http://localhost:5173`. Camera access will be requested when you try to record — allow it, and it should work from there.
 
-### Build for production
+To build for production:
 
 ```bash
 npm run build
-npm run preview   # test the production build locally at localhost:4173
+npm run preview  # previews the production build at localhost:4173
 ```
 
-Deploy the `dist/` folder to any static host.
+No environment variables needed. Nothing to configure.
 
 ---
 
-## Deployment
+## A note
 
-### Vercel (recommended)
+This is one of the projects I'm most proud of, not because it's the most technically complex thing I've built, but because it's the most considered. I wanted to make something that felt genuinely human — and I think, most of the time, it does.
 
-Push to GitHub, then:
-
-1. Go to [vercel.com](https://vercel.com) → **Add New Project**
-2. Import your GitHub repository
-3. Framework preset: **Vite** (auto-detected)
-4. Build command: `npm run build`
-5. Output directory: `dist`
-6. Environment variables: **leave blank**
-7. Click **Deploy**
-
-The `vercel.json` in the root handles SPA routing so `/reflections`, `/letters`, etc. work on direct visit and refresh.
-
-### Netlify
-
-1. Go to [netlify.com](https://netlify.com) → **Add new site**
-2. Connect GitHub, select the repo
-3. Build command: `npm run build`
-4. Publish directory: `dist`
-5. Click **Deploy**
-
-The `public/_redirects` file handles SPA routing for Netlify.
-
-### No environment variables required
-
-Dearly has no backend, no API keys, and no external services. Leave the environment variables section completely empty on any host.
+If you use it and something breaks, or something could feel better, I'd genuinely like to know.
 
 ---
 
-## Project structure
-
-```
-dearly/
-├── public/
-│   ├── _redirects              ← Netlify SPA routing
-│   └── dearly-icon.png
-├── src/
-│   ├── main.jsx
-│   ├── App.jsx                 ← routes + navigation
-│   ├── index.css               ← Tailwind + custom design system
-│   ├── components/
-│   │   ├── Hero.jsx
-│   │   ├── CaptureComponent.jsx
-│   │   ├── FloatingDoodle.jsx
-│   │   ├── GallerySection.jsx
-│   │   ├── CloudDividerSection.jsx
-│   │   ├── ReflectionsPanel.jsx
-│   │   ├── LettersToSelf.jsx
-│   │   ├── MonthlyLettersViewer.jsx
-│   │   ├── MomentsViewer.jsx
-│   │   └── ProfilePanel.jsx
-│   ├── pages/
-│   │   └── Home.jsx
-│   └── utils/
-│       ├── db.js               ← IndexedDB (captures, moments, letters, profile)
-│       ├── audioEngine.js      ← Web Audio synthesis + reel music mixing
-│       ├── videoProcessor.js   ← Canvas trimming, stitching, overlays
-│       ├── momentGenerator.js  ← Multi-clip reel generation pipeline
-│       ├── reflectionsAnalyzer.js
-│       ├── monthlyLetterGenerator.js
-│       └── profileStore.js
-├── vercel.json                 ← Vercel SPA routing
-├── vite.config.js
-├── tailwind.config.js
-└── package.json
-```
-
----
-
-## How the reel generation works
-
-When you generate a Moment, this is what happens inside your browser:
-
-1. All captures with video blobs are loaded from IndexedDB
-2. Clips are selected based on your chosen theme (older, peaceful, recent) and your profile's mood identity
-3. Each selected clip is trimmed to your preferred clip length, starting 33% into the source to avoid dead-start frames
-4. Ken Burns zoom is applied to each clip via the Canvas API
-5. An audio buffer is resolved — from your uploaded music file (decoded via `decodeAudioData`) or from a procedurally synthesized built-in track (rendered via `OfflineAudioContext`)
-6. All clips are stitched sequentially on a single canvas with crossfade transitions, and the audio track is mixed in as a separate `MediaStream` track
-7. `MediaRecorder` captures the combined video + audio stream
-8. The final `.webm` file is saved to IndexedDB and offered for download
-
-Nothing leaves your device at any point.
-
----
-
-## Browser support
-
-| Browser | Recording | Moments | Music |
-|---|---|---|---|
-| Chrome / Edge (desktop) | ✅ | ✅ | ✅ |
-| Firefox (desktop) | ✅ | ✅ | ✅ |
-| Safari 15+ (desktop) | ✅ | ✅ | ✅ |
-| Chrome (Android) | ✅ | ✅ | ✅ |
-| Safari (iOS 15+) | ⚠️ partial | ⚠️ partial | ✅ |
-
-Camera access requires HTTPS. Both Vercel and Netlify serve over HTTPS automatically.
-
----
-
-## Privacy
-
-Dearly was designed from the start to be completely private.
-
-- All data is stored in your browser's IndexedDB — no servers, no cloud
-- Video blobs, letters, moments, and your profile never leave your device
-- There are no analytics, no tracking, no cookies
-- If you clear your browser storage, your data is gone — there is no backup
-- Different devices and browsers have completely separate data
-
-This is a deliberate choice. Your memories are not a product.
-
----
-
-## Design philosophy
-
-**This should not feel like an app.**
-
-It should feel like a quiet corner. A warm café. A notebook you trust.
-
-Every word in Dearly was chosen carefully:
-
-| ❌ Don't say | ✅ Dearly says |
-|---|---|
-| Record entry | Capture softly |
-| Start recording | Begin |
-| Stop recording | Pause |
-| Save entry | Keep this |
-| Journal | Letters |
-| Insights | Reflections |
-| Memory Reel | Moments |
-| Mood picker | How does today feel? |
-| Empty state message | Nothing here yet. That's okay. |
-
-Speed implies urgency. Dearly should feel unrushed. Animations breathe rather than snap. Nothing bounces. The UI never demands your attention.
-
----
-
-## Why "Dearly"?
-
-It's how you'd start a letter to someone you care about. In this case, that someone is future you.
-
----
-
-## Contributing
-
-Dearly is a personal project built with care. If something is broken, open an issue. If you have a gentle idea that fits the spirit of the app, a pull request is welcome.
-
-Please read the design philosophy section before contributing. Features that add urgency, metrics, social elements, or cloud sync are unlikely to be a fit — not because they're bad ideas, but because they'd change what this space is.
-
----
-
-## License
-
-MIT — do what you like with it, but keep it gentle.
-
----
-
-<div align="center">
-
-<br />
-
-*Built with care, slowness, and attention to softness.*
-
-<br />
-
-**Dearly — a gentle place for your memories**
-
-<br />
-
-</div>
+*Dearly — built with care, and a lot of time spent on the words.*
