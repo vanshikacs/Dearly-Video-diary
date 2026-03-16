@@ -8,7 +8,7 @@ I've always found it hard to hold on to ordinary days. Not the big ones — thos
 
 Dearly started as a way to build something for that feeling. A video diary that doesn't ask you to perform or summarize or optimize — just to notice, and to save.
 
-**[→ Try it live at dearly.vercel.app](https://dearlywithlove-delta.vercel.app/)**
+**[→ Try it live at dearlywithlove-delta.vercel.app](https://dearlywithlove-delta.vercel.app/)**
 
 ---
 
