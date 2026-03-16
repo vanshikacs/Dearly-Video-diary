@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react
 import { motion } from 'framer-motion';
 import Home from './pages/Home';
 import ReflectionsPanel from './components/ReflectionsPanel';
-import LettersToSelf from './components/LetterstoSelf'; // FIXED: was LetterstoSelf (case mismatch)
+import LettersToSelf from './components/LettersToSelf'; 
 import MonthlyLettersViewer from './components/MonthlyLettersViewer';
 import MomentsViewer from './components/MomentsViewer';
 import ProfilePanel from './components/ProfilePanel';
