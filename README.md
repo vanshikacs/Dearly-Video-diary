@@ -8,7 +8,7 @@
 
 <br />
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-dearly.vercel.app-C84B5C?style=for-the-badge&logoColor=white)](https://dearly.vercel.app)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-dearly.vercel.app-C84B5C?style=for-the-badge&logoColor=white)](https://dearlywithlove-delta.vercel.app/)
 [![Made with React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://react.dev)
 [![Vite](https://img.shields.io/badge/Vite-5-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev)
 [![License](https://img.shields.io/badge/License-MIT-F4C7C3?style=for-the-badge)](LICENSE)
