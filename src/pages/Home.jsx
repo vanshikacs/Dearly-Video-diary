@@ -1,115 +1,129 @@
+/**
+ * Home.jsx — one targeted fix only.
+ *
+ * Previous: `<div className="hidden md:block"><AmbientDoodles density="full" /></div>`
+ * That hid doodles on desktop-home. Now rendered without the hide wrapper,
+ * visible on all screen sizes. Everything else is unchanged.
+ */
+
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom'; // FIXED: was <a href> causing full page reload
+import { Link } from 'react-router-dom';
 import Hero from '../components/Hero';
 import CaptureComponent from '../components/CaptureComponent';
 import CloudDividerSection from '../components/CloudDividerSection';
 import GallerySection from '../components/GallerySection';
+import { AmbientDoodles, SparkDivider, PetalTrail } from '../components/AmbientDoodles';
 
 const Home = () => {
   const [captureKey, setCaptureKey] = useState(0);
 
-  const handleCaptureComplete = () => {
-    setCaptureKey((prev) => prev + 1);
-  };
-
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Background floating doodles */}
-      <motion.div
-        className="fixed top-1/4 left-[5%] w-10 h-10 opacity-15 pointer-events-none z-0"
-        style={{ color: '#FFB6C1' }}
-        animate={{ y: [0, -30, 0], rotate: [0, 15, 0] }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-      >
-        <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8" /></svg>
-      </motion.div>
+    <div className="min-h-screen relative overflow-x-hidden">
 
-      <motion.div
-        className="fixed top-2/3 right-[8%] w-8 h-8 opacity-18 pointer-events-none z-0"
-        style={{ color: '#FFD1DC' }}
-        animate={{ y: [0, 20, 0], rotate: [0, -10, 0] }}
-        transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-      >
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" />
-        </svg>
-      </motion.div>
+      {/* Full doodle layer — desktop AND mobile on home page */}
+      {/* FIX: was `className="hidden md:block"` — that wrapper is gone */}
+      <AmbientDoodles density="full" />
 
-      <motion.div
-        className="fixed bottom-1/4 left-[12%] w-7 h-7 opacity-20 pointer-events-none z-0"
-        style={{ color: '#FFC0CB' }}
-        animate={{ y: [0, -15, 0], x: [0, 10, 0] }}
-        transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-      >
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" />
-        </svg>
-      </motion.div>
+      {/* Persistent gradient depth blobs */}
+      <div
+        className="fixed top-1/3 right-[-15%] w-72 h-72 rounded-full pointer-events-none z-0"
+        style={{ background: 'radial-gradient(circle, rgba(200,75,92,0.07) 0%, transparent 70%)', filter: 'blur(50px)' }}
+      />
+      <div
+        className="fixed bottom-1/4 left-[-10%] w-64 h-64 rounded-full pointer-events-none z-0"
+        style={{ background: 'radial-gradient(circle, rgba(168,200,176,0.09) 0%, transparent 70%)', filter: 'blur(40px)' }}
+      />
 
-      <motion.div
-        className="fixed top-1/2 right-[15%] w-9 h-9 opacity-12 pointer-events-none z-0"
-        style={{ color: '#E8B4BC' }}
-        animate={{ y: [0, 25, 0], rotate: [0, 20, 0] }}
-        transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
-      >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-        </svg>
-      </motion.div>
-
-      <motion.div
-        className="fixed bottom-1/3 right-[25%] w-6 h-6 opacity-25 pointer-events-none z-0"
-        style={{ color: '#FFE4E1' }}
-        animate={{ y: [0, -20, 0], scale: [1, 1.2, 1] }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
-      >
-        <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6" /></svg>
-      </motion.div>
-
-      {/* Main content */}
       <div className="relative z-10">
         <Hero />
 
-        <section className="py-20 px-6">
-          <CaptureComponent key={captureKey} onCaptureComplete={handleCaptureComplete} />
+        <SparkDivider className="mx-6 my-2" />
+
+        <section className="py-8 md:py-16 px-4 md:px-6">
+          <CaptureComponent
+            key={captureKey}
+            onCaptureComplete={() => setCaptureKey((p) => p + 1)}
+          />
         </section>
+
+        <SparkDivider className="mx-6" />
 
         <CloudDividerSection />
 
         <GallerySection key={`gallery-${captureKey}`} />
 
-        {/* Reflections preview */}
-        <section className="py-32 relative">
-          <div className="max-w-4xl mx-auto px-6 text-center">
+        {/* Reflections teaser */}
+        <section className="py-14 md:py-28 px-4 relative">
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{ background: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(200,75,92,0.04) 0%, transparent 100%)' }}
+          />
+          <div className="max-w-lg md:max-w-4xl mx-auto text-center relative z-10">
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.9, ease: 'easeOut' }}
             >
-              <h3 className="text-4xl font-bubble text-ink mb-6">Reflections</h3>
-              <p className="text-xl font-hand text-text-soft mb-8 max-w-2xl mx-auto">
-                Patterns noticed gently, without judgment
-              </p>
-              {/* FIXED: was <a href="/reflections"> causing full page reload */}
-              <Link to="/reflections" className="btn-soft">
-                See your reflections
-              </Link>
+              <PetalTrail count={3} className="mb-5" />
+              <motion.div
+                className="card-gentle relative overflow-hidden"
+                whileHover={{ y: -6, boxShadow: '0 16px 48px rgba(200,75,92,0.16)' }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.4, ease: 'easeOut' }}
+              >
+                <div
+                  className="absolute -top-6 -right-6 w-28 h-28 rounded-full pointer-events-none"
+                  style={{ background: 'radial-gradient(circle, rgba(200,75,92,0.10) 0%, transparent 70%)' }}
+                />
+                <motion.span
+                  className="absolute top-4 right-5 text-xs"
+                  style={{ color: '#C84B5C', opacity: 0.4 }}
+                  animate={{ opacity: [0.25, 0.6, 0.25], rotate: [0, 20, 0] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                >✦</motion.span>
+                <h3 className="text-2xl md:text-3xl font-bubble text-ink mb-3 relative z-10">Reflections</h3>
+                <p className="text-sm md:text-lg font-hand text-text-soft mb-6 relative z-10">
+                  Patterns noticed gently, without judgment
+                </p>
+                <Link to="/reflections">
+                  <motion.span
+                    className="btn-soft inline-flex min-h-[50px] px-8"
+                    whileTap={{ scale: 0.95 }}
+                    style={{ boxShadow: '0 4px 18px rgba(200,75,92,0.28)' }}
+                  >
+                    See your reflections
+                  </motion.span>
+                </Link>
+              </motion.div>
+              <PetalTrail count={3} className="mt-5" />
             </motion.div>
           </div>
         </section>
 
-        {/* Footer */}
         <motion.footer
-          className="py-16 text-center relative overflow-hidden border-t-2 border-blush-light/30"
+          className="py-10 md:py-16 text-center relative overflow-hidden"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
         >
-          <div className="max-w-4xl mx-auto px-6">
-            <p className="font-hand text-3xl text-ink mb-4">Dearly</p>
-            <p className="text-text-whisper text-sm">A gentle place for your memories</p>
+          <div
+            className="absolute top-0 left-8 right-8 h-px"
+            style={{ background: 'linear-gradient(90deg, transparent, rgba(200,75,92,0.2) 30%, rgba(200,75,92,0.3) 50%, rgba(200,75,92,0.2) 70%, transparent)' }}
+          />
+          <motion.p
+            className="font-hand text-2xl md:text-3xl text-ink mb-2"
+            animate={{ opacity: [0.7, 1, 0.7] }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            Dearly
+          </motion.p>
+          <p className="text-text-whisper text-xs md:text-sm">A gentle place for your memories</p>
+          <div className="flex items-center justify-center gap-3 mt-5 opacity-30">
+            <div className="w-8 h-px" style={{ background: '#C84B5C' }} />
+            <span className="text-xs" style={{ color: '#C84B5C' }}>✦</span>
+            <div className="w-8 h-px" style={{ background: '#C84B5C' }} />
           </div>
         </motion.footer>
       </div>

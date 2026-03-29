@@ -3,43 +3,41 @@ import { useRef, useState, useEffect } from 'react';
 import { getAllCaptures, getVideoBlob } from '../utils/db';
 
 const GallerySection = () => {
-  const [captures, setCaptures] = useState([]);
-  const [videoUrls, setVideoUrls] = useState({});
+  const [captures, setCaptures]       = useState([]);
+  const [videoUrls, setVideoUrls]     = useState({});
   const [centerCapture, setCenterCapture] = useState(null);
   const [selectedMemory, setSelectedMemory] = useState(null);
-  const scrollRef = useRef(null);
 
-  useEffect(() => {
-    loadCaptures();
-  }, []);
+  useEffect(() => { loadCaptures(); }, []);
 
   const loadCaptures = async () => {
-    const allCaptures = await getAllCaptures();
-    const recent = allCaptures.slice(-9); // Last 9
+    const all = await getAllCaptures();
+    const recent = all.slice(-9);
     setCaptures(recent);
+    if (recent.length >= 5) setCenterCapture(recent[4]);
 
-    // Set center (5th item)
-    if (recent.length >= 5) {
-      setCenterCapture(recent[4]);
-    }
-
-    // Load video URLs
     const urls = {};
     for (const capture of recent) {
       const blob = await getVideoBlob(capture.id);
-      if (blob) {
-        urls[capture.id] = URL.createObjectURL(blob);
-      }
+      if (blob) urls[capture.id] = URL.createObjectURL(blob);
     }
     setVideoUrls(urls);
   };
 
+  const getFeelingEmoji = (feeling) => {
+    const map = { peaceful:'🕊️', grateful:'🙏', gentle:'🌸', quiet:'🌙', warm:'☕', hopeful:'🌿', tender:'💭', calm:'🌊', thoughtful:'🍂', nostalgic:'📜' };
+    return map[feeling] || '💭';
+  };
+
+  const formatDate = (ts) =>
+    new Date(ts).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
   return (
-    <section ref={scrollRef} className="py-32 relative overflow-hidden bg-paper">
-      <div className="max-w-7xl mx-auto px-6">
+    <section className="py-16 md:py-32 relative overflow-hidden bg-paper">
+      <div className="max-w-7xl mx-auto">
         <motion.h2
-          className="heading-bubble text-center mb-20"
-          initial={{ opacity: 0, y: 30 }}
+          className="heading-bubble text-center mb-10 md:mb-20 px-4"
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
@@ -49,146 +47,161 @@ const GallerySection = () => {
 
         {captures.length === 0 ? (
           <motion.div
-            className="text-center py-32"
+            className="text-center py-16 md:py-32 px-6"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
           >
-            <p className="text-3xl font-hand text-text-whisper">
+            <p className="text-2xl md:text-3xl font-hand text-text-whisper">
               Nothing here yet. That's okay.
             </p>
           </motion.div>
         ) : (
-          <div className="flex items-center justify-center gap-6">
-            {/* Left vertical pills */}
-            <div className="flex flex-col gap-4">
-              {captures.slice(0, 2).map((capture, index) => (
-                <VerticalPill 
-                  key={capture.id} 
-                  capture={capture} 
-                  videoUrl={videoUrls[capture.id]} 
-                  delay={index * 0.1}
-                  onClick={() => setSelectedMemory(capture)}
-                />
-              ))}
-            </div>
-
-            <div className="flex flex-col gap-4">
-              {captures.slice(2, 4).map((capture, index) => (
-                <VerticalPill 
-                  key={capture.id} 
-                  capture={capture} 
-                  videoUrl={videoUrls[capture.id]} 
-                  delay={0.2 + index * 0.1}
-                  onClick={() => setSelectedMemory(capture)}
-                />
-              ))}
-            </div>
-
-            {/* Center large card */}
-            {centerCapture && (
-              <motion.div
-                className="relative w-96 h-96 rounded-full overflow-hidden shadow-soft border-4 border-white cursor-pointer"
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.4, duration: 0.8 }}
-                whileHover={{ scale: 1.05 }}
-                onClick={() => setSelectedMemory(centerCapture)}
+          <>
+            {/* ── Mobile: horizontal scroll strip ──────────────────────────── */}
+            <div className="md:hidden">
+              <div
+                className="flex gap-3 overflow-x-auto pb-4 px-4 scrollbar-hidden snap-x snap-mandatory"
+                style={{ WebkitOverflowScrolling: 'touch' }}
               >
-                {videoUrls[centerCapture.id] ? (
-                  <video
-                    src={videoUrls[centerCapture.id]}
-                    className="w-full h-full object-cover"
-                    controls={false}
-                    loop
-                    muted
-                    onMouseEnter={(e) => e.target.play()}
-                    onMouseLeave={(e) => {
-                      e.target.pause();
-                      e.target.currentTime = 0;
-                    }}
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-blush-light to-sage-light flex items-center justify-center">
-                    <span className="text-6xl">{getFeelingEmoji(centerCapture.feeling)}</span>
+                {captures.map((capture, index) => (
+                  <motion.div
+                    key={capture.id}
+                    className="flex-shrink-0 snap-center cursor-pointer relative rounded-2xl overflow-hidden shadow-gentle border-2 border-white/70"
+                    style={{ width: '140px', height: '200px' }}
+                    initial={{ opacity: 0, y: 16 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.06, duration: 0.5 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => setSelectedMemory(capture)}
+                  >
+                    {videoUrls[capture.id] ? (
+                      <video
+                        src={videoUrls[capture.id]}
+                        className="w-full h-full object-cover"
+                        muted
+                        playsInline
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-blush-light to-sage-light flex items-center justify-center">
+                        <span className="text-4xl">{getFeelingEmoji(capture.feeling)}</span>
+                      </div>
+                    )}
+                    {/* Date overlay */}
+                    <div className="absolute bottom-0 left-0 right-0 px-3 py-2 bg-gradient-to-t from-ink/50 to-transparent">
+                      <p className="text-white text-xs font-hand leading-tight">
+                        {formatDate(capture.timestamp)}
+                      </p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+              {/* Scroll hint */}
+              <p className="text-center text-xs text-text-whisper mt-2 font-hand opacity-60">
+                scroll to see more →
+              </p>
+            </div>
+
+            {/* ── Desktop: orbital pill layout ─────────────────────────────── */}
+            <div className="hidden md:flex items-center justify-center gap-6 px-6">
+              <div className="flex flex-col gap-4">
+                {captures.slice(0, 2).map((c, i) => (
+                  <VerticalPill key={c.id} capture={c} videoUrl={videoUrls[c.id]} delay={i*0.1} getFeelingEmoji={getFeelingEmoji} onClick={() => setSelectedMemory(c)} />
+                ))}
+              </div>
+              <div className="flex flex-col gap-4">
+                {captures.slice(2, 4).map((c, i) => (
+                  <VerticalPill key={c.id} capture={c} videoUrl={videoUrls[c.id]} delay={0.2+i*0.1} getFeelingEmoji={getFeelingEmoji} onClick={() => setSelectedMemory(c)} />
+                ))}
+              </div>
+
+              {/* Center large circle */}
+              {centerCapture && (
+                <motion.div
+                  className="relative w-80 h-80 rounded-full overflow-hidden shadow-soft border-4 border-white cursor-pointer flex-shrink-0"
+                  initial={{ opacity: 0, scale: 0.85 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.4, duration: 0.8 }}
+                  whileHover={{ scale: 1.04 }}
+                  onClick={() => setSelectedMemory(centerCapture)}
+                >
+                  {videoUrls[centerCapture.id] ? (
+                    <video
+                      src={videoUrls[centerCapture.id]}
+                      className="w-full h-full object-cover"
+                      muted loop
+                      onMouseEnter={(e) => e.target.play()}
+                      onMouseLeave={(e) => { e.target.pause(); e.target.currentTime = 0; }}
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-blush-light to-sage-light flex items-center justify-center">
+                      <span className="text-6xl">{getFeelingEmoji(centerCapture.feeling)}</span>
+                    </div>
+                  )}
+                  <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-ink/55 to-transparent">
+                    <p className="text-white font-hand text-base">
+                      {new Date(centerCapture.timestamp).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}
+                    </p>
                   </div>
-                )}
+                </motion.div>
+              )}
 
-                <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-ink/60 to-transparent">
-                  <p className="text-white font-hand text-lg">
-                    {new Date(centerCapture.timestamp).toLocaleDateString('en-US', {
-                      month: 'long',
-                      day: 'numeric',
-                    })}
-                  </p>
-                </div>
-              </motion.div>
-            )}
-
-            {/* Right vertical pills */}
-            <div className="flex flex-col gap-4">
-              {captures.slice(5, 7).map((capture, index) => (
-                <VerticalPill 
-                  key={capture.id} 
-                  capture={capture} 
-                  videoUrl={videoUrls[capture.id]} 
-                  delay={0.6 + index * 0.1}
-                  onClick={() => setSelectedMemory(capture)}
-                />
-              ))}
+              <div className="flex flex-col gap-4">
+                {captures.slice(5, 7).map((c, i) => (
+                  <VerticalPill key={c.id} capture={c} videoUrl={videoUrls[c.id]} delay={0.6+i*0.1} getFeelingEmoji={getFeelingEmoji} onClick={() => setSelectedMemory(c)} />
+                ))}
+              </div>
+              <div className="flex flex-col gap-4">
+                {captures.slice(7, 9).map((c, i) => (
+                  <VerticalPill key={c.id} capture={c} videoUrl={videoUrls[c.id]} delay={0.8+i*0.1} getFeelingEmoji={getFeelingEmoji} onClick={() => setSelectedMemory(c)} />
+                ))}
+              </div>
             </div>
-
-            <div className="flex flex-col gap-4">
-              {captures.slice(7, 9).map((capture, index) => (
-                <VerticalPill 
-                  key={capture.id} 
-                  capture={capture} 
-                  videoUrl={videoUrls[capture.id]} 
-                  delay={0.8 + index * 0.1}
-                  onClick={() => setSelectedMemory(capture)}
-                />
-              ))}
-            </div>
-          </div>
+          </>
         )}
       </div>
 
-      {/* Video player modal */}
+      {/* ── Memory modal ───────────────────────────────────────────────────── */}
       <AnimatePresence>
         {selectedMemory && (
           <motion.div
-            className="fixed inset-0 bg-ink/80 backdrop-blur-sm z-50 flex items-center justify-center p-6"
+            className="fixed inset-0 bg-ink/80 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSelectedMemory(null)}
           >
             <motion.div
-              className="max-w-4xl w-full bg-paper rounded-puffy overflow-hidden shadow-soft"
-              initial={{ scale: 0.9, y: 50 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 50 }}
+              className="w-full sm:max-w-2xl bg-paper rounded-t-3xl sm:rounded-3xl overflow-hidden shadow-soft"
+              initial={{ y: 80, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 80, opacity: 0 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
               onClick={(e) => e.stopPropagation()}
             >
+              {/* Drag handle on mobile */}
+              <div className="flex justify-center pt-3 pb-1 sm:hidden">
+                <div className="w-10 h-1 bg-blush-light rounded-full" />
+              </div>
+
               <video
                 src={videoUrls[selectedMemory.id]}
                 controls
                 autoPlay
-                className="w-full aspect-video bg-ink"
+                playsInline
+                className="w-full bg-ink"
+                style={{ maxHeight: '55vh' }}
               />
-              <div className="p-6">
-                <h3 className="text-2xl font-bubble text-ink mb-2">
-                  {new Date(selectedMemory.timestamp).toLocaleDateString('en-US', {
-                    weekday: 'long',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
+              <div className="p-5 md:p-8">
+                <h3 className="text-xl md:text-2xl font-bubble text-ink mb-1">
+                  {new Date(selectedMemory.timestamp).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
                 </h3>
-                <p className="text-text-whisper mb-4 font-hand">
+                <p className="text-text-whisper mb-5 font-hand">
                   {getFeelingEmoji(selectedMemory.feeling)} {selectedMemory.feeling}
                 </p>
-                <button onClick={() => setSelectedMemory(null)} className="btn-soft">
+                <button onClick={() => setSelectedMemory(null)} className="btn-soft w-full sm:w-auto">
                   Close
                 </button>
               </div>
@@ -200,48 +213,26 @@ const GallerySection = () => {
   );
 };
 
-const VerticalPill = ({ capture, videoUrl, delay, onClick }) => {
-  return (
-    <motion.div
-      className="relative w-32 h-48 rounded-full overflow-hidden shadow-gentle border-3 border-white group cursor-pointer"
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay, duration: 0.6 }}
-      whileHover={{ y: -5, scale: 1.05 }}
-      onClick={onClick}
-    >
-      {videoUrl ? (
-        <video
-          src={videoUrl}
-          className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
-          muted
-        />
-      ) : (
-        <div className="w-full h-full bg-gradient-to-br from-blush-light to-sage-light flex items-center justify-center">
-          <span className="text-3xl">{getFeelingEmoji(capture.feeling)}</span>
-        </div>
-      )}
-
-      <div className="absolute inset-0 bg-ink/0 group-hover:bg-ink/10 transition-all duration-500" />
-    </motion.div>
-  );
-};
-
-const getFeelingEmoji = (feeling) => {
-  const emojis = {
-    peaceful: '🕊️',
-    grateful: '🙏',
-    gentle: '🌸',
-    quiet: '🌙',
-    warm: '☕',
-    hopeful: '🌿',
-    tender: '💭',
-    calm: '🌊',
-    thoughtful: '🍂',
-    nostalgic: '📜',
-  };
-  return emojis[feeling] || '💭';
-};
+const VerticalPill = ({ capture, videoUrl, delay, getFeelingEmoji, onClick }) => (
+  <motion.div
+    className="relative w-28 h-44 rounded-full overflow-hidden shadow-gentle border-2 border-white group cursor-pointer flex-shrink-0"
+    initial={{ opacity: 0, y: 24 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    transition={{ delay, duration: 0.6 }}
+    whileHover={{ y: -4, scale: 1.04 }}
+    whileTap={{ scale: 0.97 }}
+    onClick={onClick}
+  >
+    {videoUrl ? (
+      <video src={videoUrl} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" muted />
+    ) : (
+      <div className="w-full h-full bg-gradient-to-br from-blush-light to-sage-light flex items-center justify-center">
+        <span className="text-2xl">{getFeelingEmoji(capture.feeling)}</span>
+      </div>
+    )}
+    <div className="absolute inset-0 bg-ink/0 group-hover:bg-ink/10 transition-all duration-500" />
+  </motion.div>
+);
 
 export default GallerySection;

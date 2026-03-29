@@ -5,16 +5,16 @@ import { saveCapture, saveVideoBlob } from '../utils/db';
 import { getSupportedMimeType } from '../utils/videoProcessor';
 
 const FEELINGS = [
-  { id: 'peaceful', emoji: '🕊️', label: 'Peaceful' },
-  { id: 'grateful', emoji: '🙏', label: 'Grateful' },
-  { id: 'gentle', emoji: '🌸', label: 'Gentle' },
-  { id: 'quiet', emoji: '🌙', label: 'Quiet' },
-  { id: 'warm', emoji: '☕', label: 'Warm' },
-  { id: 'hopeful', emoji: '🌿', label: 'Hopeful' },
-  { id: 'tender', emoji: '💭', label: 'Tender' },
-  { id: 'calm', emoji: '🌊', label: 'Calm' },
+  { id: 'peaceful',   emoji: '🕊️', label: 'Peaceful'   },
+  { id: 'grateful',   emoji: '🙏', label: 'Grateful'   },
+  { id: 'gentle',     emoji: '🌸', label: 'Gentle'     },
+  { id: 'quiet',      emoji: '🌙', label: 'Quiet'      },
+  { id: 'warm',       emoji: '☕', label: 'Warm'       },
+  { id: 'hopeful',    emoji: '🌿', label: 'Hopeful'    },
+  { id: 'tender',     emoji: '💭', label: 'Tender'     },
+  { id: 'calm',       emoji: '🌊', label: 'Calm'       },
   { id: 'thoughtful', emoji: '🍂', label: 'Thoughtful' },
-  { id: 'nostalgic', emoji: '📜', label: 'Nostalgic' },
+  { id: 'nostalgic',  emoji: '📜', label: 'Nostalgic'  },
 ];
 
 const PROMPTS = [
@@ -26,21 +26,21 @@ const PROMPTS = [
 ];
 
 const CaptureComponent = ({ onCaptureComplete }) => {
-  const [step, setStep] = useState('idle');
-  const [isRecording, setIsRecording] = useState(false);
+  const [step, setStep]                   = useState('idle');
+  const [isRecording, setIsRecording]     = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
-  const [stream, setStream] = useState(null);
-  const [recordedBlob, setRecordedBlob] = useState(null);
-  const [writtenText, setWrittenText] = useState('Dearly,\n\n');
+  const [stream, setStream]               = useState(null);
+  const [recordedBlob, setRecordedBlob]   = useState(null);
+  const [writtenText, setWrittenText]     = useState('Dearly,\n\n');
   const [selectedFeeling, setSelectedFeeling] = useState(null);
-  const [showPrompt, setShowPrompt] = useState(false);
+  const [showPrompt, setShowPrompt]       = useState(false);
   const [currentPrompt, setCurrentPrompt] = useState('');
 
-  const videoRef = useRef(null);
+  const videoRef         = useRef(null);
   const mediaRecorderRef = useRef(null);
-  const chunksRef = useRef([]);
-  const timerRef = useRef(null);
-  const textareaRef = useRef(null);
+  const chunksRef        = useRef([]);
+  const timerRef         = useRef(null);
+  const textareaRef      = useRef(null);
 
   useEffect(() => {
     return () => {
@@ -55,51 +55,33 @@ const CaptureComponent = ({ onCaptureComplete }) => {
         video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' },
         audio: true,
       });
-
       setStream(mediaStream);
       if (videoRef.current) videoRef.current.srcObject = mediaStream;
 
-      // FIXED: Use safe mimeType fallback instead of hardcoding vp9
       const mimeType = getSupportedMimeType();
-      const recorderOptions = mimeType ? { mimeType } : {};
+      let recorder;
+      try { recorder = new MediaRecorder(mediaStream, mimeType ? { mimeType } : {}); }
+      catch (_) { recorder = new MediaRecorder(mediaStream); }
 
-      let mediaRecorder;
-      try {
-        mediaRecorder = new MediaRecorder(mediaStream, recorderOptions);
-      } catch (e) {
-        // Last resort: no options at all
-        mediaRecorder = new MediaRecorder(mediaStream);
-      }
-
-      mediaRecorderRef.current = mediaRecorder;
+      mediaRecorderRef.current = recorder;
       chunksRef.current = [];
-
-      mediaRecorder.ondataavailable = (e) => {
-        if (e.data.size > 0) chunksRef.current.push(e.data);
-      };
-
-      mediaRecorder.onstop = () => {
-        const blobType = mimeType || 'video/webm';
-        const blob = new Blob(chunksRef.current, { type: blobType });
+      recorder.ondataavailable = (e) => { if (e.data.size > 0) chunksRef.current.push(e.data); };
+      recorder.onstop = () => {
+        const blob = new Blob(chunksRef.current, { type: mimeType || 'video/webm' });
         setRecordedBlob(blob);
         setStep('preview');
-
         if (videoRef.current) {
           videoRef.current.srcObject = null;
           videoRef.current.src = URL.createObjectURL(blob);
         }
       };
-
-      mediaRecorder.start();
+      recorder.start();
       setIsRecording(true);
       setStep('recording');
-
-      timerRef.current = setInterval(() => {
-        setRecordingTime((prev) => prev + 1);
-      }, 1000);
+      timerRef.current = setInterval(() => setRecordingTime((p) => p + 1), 1000);
     } catch (err) {
       console.error('Camera access error:', err);
-      alert('Could not access camera. Please check permissions and try again.');
+      alert('Camera permission is needed to record. Please allow access and try again.');
     }
   };
 
@@ -117,15 +99,9 @@ const CaptureComponent = ({ onCaptureComplete }) => {
     setTimeout(() => textareaRef.current?.focus(), 300);
   };
 
-  const handleShowPrompt = () => {
-    setCurrentPrompt(PROMPTS[Math.floor(Math.random() * PROMPTS.length)]);
-    setShowPrompt(true);
-  };
-
   const handleSaveCapture = async () => {
     if (!selectedFeeling) return;
     setStep('saving');
-
     try {
       const capture = {
         feeling: selectedFeeling,
@@ -134,18 +110,15 @@ const CaptureComponent = ({ onCaptureComplete }) => {
         date: new Date().toISOString(),
         duration: recordingTime,
       };
-
       const captureId = await saveCapture(capture);
       if (recordedBlob) await saveVideoBlob(captureId, recordedBlob);
 
-      // Reset state
       setRecordedBlob(null);
       setWrittenText('Dearly,\n\n');
       setSelectedFeeling(null);
       setRecordingTime(0);
       setStep('idle');
       setShowPrompt(false);
-
       if (onCaptureComplete) onCaptureComplete(captureId);
     } catch (err) {
       console.error('Save error:', err);
@@ -153,23 +126,20 @@ const CaptureComponent = ({ onCaptureComplete }) => {
     }
   };
 
-  const formatTime = (seconds) => {
-    const m = Math.floor(seconds / 60);
-    const s = seconds % 60;
-    return `${m}:${s.toString().padStart(2, '0')}`;
-  };
+  const formatTime = (s) => `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, '0')}`;
 
   return (
     <motion.div
       id="capture"
-      className="card-gentle max-w-4xl mx-auto paper-grain relative"
-      initial={{ opacity: 0, y: 30 }}
+      className="card-gentle max-w-4xl mx-auto paper-grain relative overflow-hidden"
+      initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
     >
+      {/* Corner doodles — hidden on mobile to reduce noise */}
       <motion.div
-        className="absolute -top-8 -right-8 w-12 h-12 text-blush opacity-40"
-        animate={{ rotate: [0, 360], scale: [1, 1.1, 1] }}
+        className="absolute -top-6 -right-6 w-10 h-10 text-blush opacity-30 hidden sm:block"
+        animate={{ rotate: [0, 360] }}
         transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
       >
         <svg viewBox="0 0 24 24" fill="currentColor">
@@ -177,22 +147,16 @@ const CaptureComponent = ({ onCaptureComplete }) => {
         </svg>
       </motion.div>
 
-      <motion.div
-        className="absolute -bottom-6 -left-6 w-10 h-10 text-sage opacity-30"
-        animate={{ y: [0, -10, 0], rotate: [0, 5, 0] }}
-        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-      >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-        </svg>
-      </motion.div>
-
-      <div className="flex items-center gap-3 mb-8">
-        <Video className="w-7 h-7 text-ink" />
-        <h3 className="text-3xl font-bubble text-ink">Capture softly</h3>
+      {/* Header */}
+      <div className="flex items-center gap-3 mb-6">
+        <Video className="w-6 h-6 text-ink flex-shrink-0" />
+        <h3 className="text-2xl md:text-3xl font-bubble text-ink">Capture softly</h3>
       </div>
 
-      <div className="relative aspect-video bg-gradient-to-br from-blush-light/30 to-sage-light/30 rounded-soft overflow-hidden mb-8 border-3 border-blush-light">
+      {/* Video preview */}
+      <div className="relative bg-gradient-to-br from-blush-light/30 to-sage-light/30 rounded-2xl overflow-hidden mb-6 border-2 border-blush-light"
+        style={{ aspectRatio: '4/3' }}
+      >
         <video
           ref={videoRef}
           autoPlay
@@ -202,120 +166,137 @@ const CaptureComponent = ({ onCaptureComplete }) => {
         />
         {step === 'idle' && (
           <div className="absolute inset-0 flex items-center justify-center bg-paper/80 backdrop-blur-sm">
-            <p className="text-xl text-text-whisper font-hand">When you're ready</p>
+            <p className="text-base md:text-xl text-text-whisper font-hand px-4 text-center">
+              When you're ready
+            </p>
           </div>
         )}
         {isRecording && (
           <motion.div
-            className="absolute top-6 right-6 flex items-center gap-3 bg-ink text-paper px-5 py-3 rounded-full"
+            className="absolute top-3 right-3 flex items-center gap-2 bg-ink text-paper px-4 py-2 rounded-full text-sm"
             animate={{ opacity: [1, 0.6, 1] }}
             transition={{ duration: 1.5, repeat: Infinity }}
           >
-            <div className="w-3 h-3 bg-paper rounded-full" />
+            <div className="w-2 h-2 bg-blush rounded-full" />
             <span className="font-mono font-medium">{formatTime(recordingTime)}</span>
           </motion.div>
         )}
       </div>
 
+      {/* Step content */}
       <AnimatePresence mode="wait">
+
         {step === 'idle' && (
-          <motion.div key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center">
-            <motion.button onClick={startRecording} className="btn-soft" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          <motion.div key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center pt-2">
+            <motion.button
+              onClick={startRecording}
+              className="btn-soft min-h-[52px] px-10"
+              whileTap={{ scale: 0.95 }}
+            >
               Begin
             </motion.button>
           </motion.div>
         )}
 
         {step === 'recording' && (
-          <motion.div key="recording" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center">
+          <motion.div key="recording" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center pt-2">
             <motion.button
               onClick={stopRecording}
-              className="px-8 py-4 bg-blush-dark text-white rounded-full font-medium shadow-gentle hover:bg-blush transition-all duration-500"
-              whileHover={{ scale: 1.05 }}
+              className="inline-flex items-center gap-2 px-8 py-4 bg-blush-dark text-white rounded-full font-medium shadow-gentle min-h-[52px]"
               whileTap={{ scale: 0.95 }}
             >
-              <Square className="w-5 h-5 inline mr-2" />
+              <Square className="w-4 h-4" />
               Pause
             </motion.button>
           </motion.div>
         )}
 
         {step === 'preview' && (
-          <motion.div key="preview" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex justify-center gap-4">
-            <button onClick={() => { setRecordedBlob(null); setRecordingTime(0); setStep('idle'); }} className="btn-outline-soft">
+          <motion.div key="preview" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col sm:flex-row justify-center gap-3 pt-2">
+            <button
+              onClick={() => { setRecordedBlob(null); setRecordingTime(0); setStep('idle'); }}
+              className="btn-outline-soft min-h-[52px]"
+            >
               Start over
             </button>
-            <button onClick={handleContinueToWriting} className="btn-soft">Continue</button>
+            <button onClick={handleContinueToWriting} className="btn-soft min-h-[52px]">
+              Continue
+            </button>
           </motion.div>
         )}
 
         {step === 'writing' && (
-          <motion.div key="writing" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-            <div className="mb-6">
-              <textarea
-                ref={textareaRef}
-                value={writtenText}
-                onChange={(e) => setWrittenText(e.target.value)}
-                placeholder="What stayed with you?"
-                className="w-full h-48 px-6 py-5 bg-white/60 border-2 border-blush-light rounded-soft focus:outline-none focus:border-ink transition-all duration-500 resize-none font-body text-text-soft"
-                style={{ lineHeight: '1.8' }}
-              />
-            </div>
-            {!showPrompt && (
+          <motion.div key="writing" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+            <textarea
+              ref={textareaRef}
+              value={writtenText}
+              onChange={(e) => setWrittenText(e.target.value)}
+              placeholder="What stayed with you?"
+              className="w-full h-36 md:h-48 px-4 py-4 bg-white/60 border-2 border-blush-light rounded-2xl focus:outline-none focus:border-ink transition-all duration-500 resize-none font-body text-text-soft text-base mb-4"
+              style={{ lineHeight: '1.75' }}
+            />
+
+            {!showPrompt ? (
               <button
-                onClick={handleShowPrompt}
-                className="text-sm text-ink-light hover:text-ink transition-colors mb-6 flex items-center gap-2"
+                onClick={() => { setCurrentPrompt(PROMPTS[Math.floor(Math.random() * PROMPTS.length)]); setShowPrompt(true); }}
+                className="text-sm text-ink-light hover:text-ink transition-colors mb-5 flex items-center gap-2"
               >
                 <Feather className="w-4 h-4" />
                 Need a gentle prompt?
               </button>
-            )}
-            {showPrompt && (
+            ) : (
               <motion.p
-                className="text-lg font-hand text-ink mb-6 p-4 bg-blush-light/30 rounded-soft"
-                initial={{ opacity: 0, y: -10 }}
+                className="text-base font-hand text-ink mb-5 p-4 bg-blush-light/30 rounded-2xl"
+                initial={{ opacity: 0, y: -8 }}
                 animate={{ opacity: 1, y: 0 }}
               >
                 {currentPrompt}
               </motion.p>
             )}
-            <div className="flex justify-center gap-4">
-              <button onClick={() => setStep('preview')} className="btn-outline-soft">Back</button>
-              <button onClick={() => setStep('feeling')} className="btn-soft">Continue</button>
+
+            <div className="flex flex-col sm:flex-row justify-center gap-3">
+              <button onClick={() => setStep('preview')} className="btn-outline-soft min-h-[52px]">Back</button>
+              <button onClick={() => setStep('feeling')} className="btn-soft min-h-[52px]">Continue</button>
             </div>
           </motion.div>
         )}
 
         {step === 'feeling' && (
-          <motion.div key="feeling" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-            <p className="text-center text-xl font-hand text-text-soft mb-6">How does today feel?</p>
-            <div className="grid grid-cols-5 gap-4 mb-8">
+          <motion.div key="feeling" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+            <p className="text-center text-base md:text-xl font-hand text-text-soft mb-5">
+              How does today feel?
+            </p>
+            {/* 2 cols on mobile, 5 cols on sm+ */}
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6">
               {FEELINGS.map((feeling, index) => (
                 <motion.button
                   key={feeling.id}
                   onClick={() => setSelectedFeeling(feeling.id)}
-                  className={`aspect-square rounded-soft flex flex-col items-center justify-center transition-all duration-500 border-3 ${
-                    selectedFeeling === feeling.id
+                  className={`
+                    rounded-2xl flex flex-col items-center justify-center py-4 px-2
+                    transition-all duration-400 border-2
+                    ${selectedFeeling === feeling.id
                       ? 'border-ink bg-blush-light/50 shadow-gentle scale-105'
-                      : 'border-transparent bg-white/40 hover:border-blush-light'
-                  }`}
-                  initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                      : 'border-transparent bg-white/40'}
+                  `}
+                  style={{ minHeight: '80px' }}
+                  initial={{ opacity: 0, scale: 0.85, y: 12 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
-                  transition={{ delay: index * 0.05, duration: 0.4 }}
-                  whileHover={{ scale: 1.08, y: -3 }}
-                  whileTap={{ scale: 0.98 }}
+                  transition={{ delay: index * 0.04, duration: 0.35 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <span className="text-4xl mb-2">{feeling.emoji}</span>
-                  <span className="text-xs font-medium text-text-soft">{feeling.label}</span>
+                  <span className="text-3xl mb-1">{feeling.emoji}</span>
+                  <span className="text-xs font-medium text-text-soft leading-tight">{feeling.label}</span>
                 </motion.button>
               ))}
             </div>
-            <div className="flex justify-center gap-4">
-              <button onClick={() => setStep('writing')} className="btn-outline-soft">Back</button>
+
+            <div className="flex flex-col sm:flex-row justify-center gap-3">
+              <button onClick={() => setStep('writing')} className="btn-outline-soft min-h-[52px]">Back</button>
               <button
                 onClick={handleSaveCapture}
                 disabled={!selectedFeeling}
-                className={`btn-soft ${!selectedFeeling ? 'opacity-40 cursor-not-allowed' : ''}`}
+                className={`btn-soft min-h-[52px] ${!selectedFeeling ? 'opacity-40 cursor-not-allowed' : ''}`}
               >
                 Keep this
               </button>
@@ -324,15 +305,16 @@ const CaptureComponent = ({ onCaptureComplete }) => {
         )}
 
         {step === 'saving' && (
-          <motion.div key="saving" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-12">
+          <motion.div key="saving" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-10">
             <motion.div
-              className="w-16 h-16 mx-auto mb-6 border-4 border-blush border-t-ink rounded-full"
+              className="w-14 h-14 mx-auto mb-5 border-4 border-blush border-t-ink rounded-full"
               animate={{ rotate: 360 }}
               transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
             />
-            <p className="text-xl font-hand text-text-whisper">Saving gently...</p>
+            <p className="text-lg font-hand text-text-whisper">Saving gently...</p>
           </motion.div>
         )}
+
       </AnimatePresence>
     </motion.div>
   );

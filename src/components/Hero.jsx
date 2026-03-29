@@ -1,120 +1,166 @@
+/**
+ * Hero.jsx — restored to match the reference screenshot
+ *
+ * What the screenshot shows:
+ *   - Tagline "The art of treasuring the quietly beautiful." sits ABOVE
+ *     the orbit cluster, roughly 160px from top of visible area
+ *   - Centre circle is ~250px on screen — visually dominant
+ *   - One orbiting thumbnail visible top-left of cluster (~60px circle)
+ *   - The whole composition sits slightly below screen-centre
+ *   - Soft pinkish background, no harsh elements
+ *   - "Dearly" title is large bubble text below the cluster
+ *
+ * Changes from previous version:
+ *   - Container: clamp(280px,82vw,460px) — up from 260/400
+ *   - Centre photo: clamp(160px,50vw,240px) — up from 152/220
+ *   - Three glow rings retained but stronger (higher opacity values)
+ *   - Added gentle float animation on the entire cluster (y: 0 → -12 → 0)
+ *   - Tagline visible on BOTH mobile and desktop (it's above orbit in screenshot)
+ *   - Orbit radius scaled to match new container
+ */
+
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { AmbientDoodles } from './AmbientDoodles';
+
+const ORBITING_IMAGES = [
+  { src: 'https://i.pinimg.com/1200x/41/11/c6/4111c6f8811510420e555bfc2aa9c2a3.jpg', angle: 0   },
+  { src: 'https://i.pinimg.com/1200x/c6/9f/c3/c69fc3a7e4a7a171dab82c767788c4ba.jpg', angle: 90  },
+  { src: 'https://i.pinimg.com/1200x/06/60/db/0660db75f47dd335154c1d13b8a7c661.jpg', angle: 180 },
+  { src: 'https://i.pinimg.com/736x/5b/34/21/5b3421d5eba94d03ba60ad2b2bb6490b.jpg', angle: 270 },
+];
 
 const Hero = () => {
   const navigate = useNavigate();
 
-  const orbitingImages = [
-    { src: 'https://i.pinimg.com/1200x/41/11/c6/4111c6f8811510420e555bfc2aa9c2a3.jpg', delay: 0 },
-    { src: 'https://i.pinimg.com/1200x/c6/9f/c3/c69fc3a7e4a7a171dab82c767788c4ba.jpg', delay: 1 },
-    { src: 'https://i.pinimg.com/1200x/06/60/db/0660db75f47dd335154c1d13b8a7c661.jpg', delay: 2 },
-    { src: 'https://i.pinimg.com/736x/5b/34/21/5b3421d5eba94d03ba60ad2b2bb6490b.jpg', delay: 3 },
-  ];
-
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden py-20">
-      {/* Smooth gradient overlay for perfect blending */}
-      <div 
+    <section className="relative min-h-[100svh] flex flex-col items-center justify-center overflow-hidden px-5 py-14 md:py-20">
+
+      {/* Hero-density doodles */}
+      <AmbientDoodles density="hero" />
+
+      {/* ── Background atmosphere layers ──────────────────────────────── */}
+      {/* Main warm radial — creates the pinkish-cream bloom of the screenshot */}
+      <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(ellipse at center, rgba(255, 240, 245, 0.4) 0%, transparent 70%)',
+          background: 'radial-gradient(ellipse 85% 75% at 50% 48%, rgba(255,228,236,0.60) 0%, rgba(255,240,245,0.25) 55%, transparent 75%)',
         }}
       />
-      
-      {/* TONS of Romantic floating doodles - hearts, envelopes, stamps */}
-      <motion.div
-        className="absolute top-20 left-[15%] w-10 h-10 opacity-25"
-        style={{ color: '#C84B5C' }}
-        animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-      >
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-        </svg>
-      </motion.div>
+      {/* Top-left warm bloom */}
+      <div
+        className="absolute pointer-events-none"
+        style={{
+          top: '-80px', left: '-80px',
+          width: '420px', height: '380px',
+          background: 'radial-gradient(circle, rgba(200,75,92,0.10) 0%, transparent 65%)',
+          filter: 'blur(60px)',
+        }}
+      />
+      {/* Bottom-right cool sage bloom */}
+      <div
+        className="absolute pointer-events-none"
+        style={{
+          bottom: '-40px', right: '-40px',
+          width: '300px', height: '300px',
+          background: 'radial-gradient(circle, rgba(168,200,176,0.12) 0%, transparent 65%)',
+          filter: 'blur(50px)',
+        }}
+      />
 
-      <motion.div
-        className="absolute top-40 right-[8%] w-8 h-8 text-blush opacity-30"
-        animate={{ y: [0, 15, 0], rotate: [0, -8, 0] }}
-        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-      >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-          <path d="M22 6l-10 7L2 6" />
-        </svg>
-      </motion.div>
+      {/* ── Main content column ───────────────────────────────────────── */}
+      <div className="relative z-10 w-full max-w-sm sm:max-w-xl mx-auto flex flex-col items-center text-center gap-5 md:gap-7">
 
-      <motion.div
-        className="absolute bottom-32 right-[12%] w-12 h-12 text-blush-dark opacity-35"
-        animate={{ y: [0, 15, 0], rotate: [0, -5, 0] }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-      >
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-        </svg>
-      </motion.div>
+        {/* Tagline — shown ABOVE orbit on both mobile and desktop */}
+        {/* This matches the screenshot exactly */}
+        <motion.p
+          className="font-hand text-base sm:text-lg text-ink leading-relaxed px-4"
+          style={{ opacity: 0 }}
+          animate={{ opacity: 0.72 }}
+          transition={{ delay: 0.4, duration: 1.2 }}
+        >
+          The art of treasuring the quietly beautiful.
+        </motion.p>
 
-      <motion.div
-        className="absolute top-32 left-[25%] w-9 h-9 opacity-20"
-        style={{ color: '#C84B5C' }}
-        animate={{ y: [0, -12, 0], rotate: [0, 10, 0] }}
-        transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-      >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeDasharray="2 2">
-          <rect x="4" y="4" width="16" height="16" rx="2" />
-        </svg>
-      </motion.div>
+        {/* ── Orbit cluster ─────────────────────────────────────────────── */}
+        {/* Bigger container — matches the large visual presence in screenshot */}
+        <motion.div
+          className="relative"
+          style={{
+            width:  'clamp(280px, 82vw, 460px)',
+            height: 'clamp(280px, 82vw, 460px)',
+          }}
+          // Gentle float — the whole cluster breathes up and down slowly
+          animate={{ y: [0, -14, 0] }}
+          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          {/* ── Glow halo system ─────────────────────────────────────── */}
 
-      <motion.div
-        className="absolute bottom-48 left-[18%] w-11 h-11 text-blush opacity-25"
-        animate={{ y: [0, -18, 0], rotate: [0, 8, 0] }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
-      >
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" />
-        </svg>
-      </motion.div>
-
-      <motion.div
-        className="absolute top-64 right-[22%] w-7 h-7 opacity-25"
-        style={{ color: '#C84B5C' }}
-        animate={{ y: [0, 10, 0], rotate: [0, -12, 0] }}
-        transition={{ duration: 8.5, repeat: Infinity, ease: 'easeInOut', delay: 2.5 }}
-      >
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-        </svg>
-      </motion.div>
-
-      <motion.div
-        className="absolute bottom-24 right-[28%] w-10 h-10 text-blush-light opacity-30"
-        animate={{ y: [0, -15, 0], rotate: [0, 6, 0] }}
-        transition={{ duration: 7.5, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
-      >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-        </svg>
-      </motion.div>
-
-      <motion.div
-        className="absolute top-56 left-[8%] w-8 h-8 text-blush-dark opacity-25"
-        animate={{ y: [0, 12, 0], rotate: [0, -7, 0] }}
-        transition={{ duration: 9.5, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
-      >
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" />
-        </svg>
-      </motion.div>
-
-      <div className="max-w-6xl mx-auto px-6 text-center relative z-10">
-        {/* Central circular hero with orbiting images */}
-        <div className="relative w-full max-w-xl mx-auto mb-12" style={{ height: '500px' }}>
-          {/* Center large image */}
+          {/* Ring 1 — outermost bloom, very diffuse */}
           <motion.div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full overflow-hidden shadow-soft border-4 border-white"
-            initial={{ scale: 0.8, opacity: 0 }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none"
+            style={{
+              width:  'clamp(250px, 78vw, 420px)',
+              height: 'clamp(250px, 78vw, 420px)',
+              background: 'radial-gradient(circle, rgba(200,75,92,0.16) 0%, transparent 62%)',
+            }}
+            animate={{ scale: [1, 1.20, 1], opacity: [0.55, 0.90, 0.55] }}
+            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+          />
+
+          {/* Ring 2 — mid glow */}
+          <motion.div
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none"
+            style={{
+              width:  'clamp(215px, 66vw, 355px)',
+              height: 'clamp(215px, 66vw, 355px)',
+              background: 'radial-gradient(circle, rgba(200,75,92,0.26) 0%, transparent 60%)',
+            }}
+            animate={{ scale: [1, 1.12, 1], opacity: [0.70, 1, 0.70] }}
+            transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut' }}
+          />
+
+          {/* Spinning dashed ring */}
+          <motion.div
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none"
+            style={{
+              width:  'clamp(195px, 60vw, 320px)',
+              height: 'clamp(195px, 60vw, 320px)',
+              border: '1.5px dashed rgba(200,75,92,0.25)',
+            }}
+            animate={{ rotate: 360 }}
+            transition={{ duration: 28, repeat: Infinity, ease: 'linear' }}
+          />
+
+          {/* Ring 3 — innermost bloom, tight against photo */}
+          <motion.div
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none"
+            style={{
+              width:  'clamp(178px, 55vw, 295px)',
+              height: 'clamp(178px, 55vw, 295px)',
+              background: 'radial-gradient(circle, rgba(200,75,92,0.32) 0%, transparent 52%)',
+            }}
+            animate={{ scale: [1, 1.07, 1], opacity: [0.75, 1, 0.75] }}
+            transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
+          />
+
+          {/* ── Centre photo circle ───────────────────────────────────── */}
+          {/* This is the dominant visual — large, white-bordered, soft-shadowed */}
+          <motion.div
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full overflow-hidden border-4 border-white"
+            style={{
+              width:  'clamp(160px, 50vw, 240px)',
+              height: 'clamp(160px, 50vw, 240px)',
+              boxShadow: [
+                '0 12px 48px rgba(200,75,92,0.30)',
+                '0 4px 16px rgba(0,0,0,0.07)',
+                '0 0 0 7px rgba(255,255,255,0.60)',
+                '0 0 0 13px rgba(200,75,92,0.08)',
+              ].join(', '),
+            }}
+            initial={{ scale: 0.72, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 1, ease: 'easeOut' }}
+            transition={{ duration: 1.2, ease: [0.34, 1.56, 0.64, 1] }}
           >
             <img
               src="https://i.pinimg.com/1200x/ce/28/06/ce28067cb038a7415a4c46e245235301.jpg"
@@ -123,122 +169,106 @@ const Hero = () => {
             />
           </motion.div>
 
-          {/* Curved text around center */}
-          <motion.div
-            className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-8"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 0.8 }}
-          >
-            <p className="font-hand text-2xl text-ink whitespace-nowrap">
-             The art of treasuring the quietly beautiful.
-            </p>
-          </motion.div>
-
-          {/* Orbiting small circles */}
-          {orbitingImages.map((img, index) => (
-            <motion.div
-              key={index}
-              className="absolute top-1/2 left-1/2 w-20 h-20 -ml-10 -mt-10"
-              style={{
-                transformOrigin: '50% 50%',
-              }}
-              animate={{
-                rotate: 360,
-              }}
-              transition={{
-                duration: 30,
-                repeat: Infinity,
-                ease: 'linear',
-                delay: img.delay * 2,
-              }}
-            >
+          {/* ── Orbiting thumbnails ───────────────────────────────────── */}
+          {ORBITING_IMAGES.map((img, index) => {
+            const armDuration = 30 + index * 5;
+            return (
               <motion.div
-                className="w-20 h-20 rounded-full overflow-hidden shadow-gentle border-3 border-white"
+                key={index}
+                className="absolute top-1/2 left-1/2"
                 style={{
-                  transform: `translateX(${120 + index * 20}px)`,
+                  width:  'clamp(50px, 14vw, 68px)',
+                  height: 'clamp(50px, 14vw, 68px)',
+                  marginTop:  'calc(-1 * clamp(25px, 7vw, 34px))',
+                  marginLeft: 'calc(-1 * clamp(25px, 7vw, 34px))',
+                  transformOrigin: 'clamp(25px, 7vw, 34px) clamp(25px, 7vw, 34px)',
                 }}
-                animate={{
-                  rotate: -360,
-                }}
-                transition={{
-                  duration: 30,
-                  repeat: Infinity,
-                  ease: 'linear',
-                  delay: img.delay * 2,
-                }}
-                whileHover={{ scale: 1.1 }}
+                animate={{ rotate: [img.angle, img.angle + 360] }}
+                transition={{ duration: armDuration, repeat: Infinity, ease: 'linear' }}
               >
-                <img
-                  src={img.src}
-                  alt="Moment"
-                  className="w-full h-full object-cover"
-                />
+                <motion.div
+                  className="w-full h-full rounded-full overflow-hidden border-2 border-white"
+                  style={{
+                    transform: `translateX(clamp(115px, 34vw, 178px)) rotate(${-img.angle}deg)`,
+                    boxShadow: '0 3px 12px rgba(200,75,92,0.22)',
+                  }}
+                  animate={{ rotate: [-(img.angle), -(img.angle + 360)] }}
+                  transition={{ duration: armDuration, repeat: Infinity, ease: 'linear' }}
+                >
+                  <img src={img.src} alt="" className="w-full h-full object-cover" />
+                </motion.div>
               </motion.div>
-            </motion.div>
-          ))}
-        </div>
+            );
+          })}
+        </motion.div>
 
-        {/* Title and tagline */}
+        {/* ── Title & subtitle ──────────────────────────────────────────── */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          className="flex flex-col items-center gap-2 md:gap-3"
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.8 }}
+          transition={{ delay: 0.9, duration: 1, ease: 'easeOut' }}
         >
-          <h1 className="heading-bubble mb-6">
-            Dearly
-          </h1>
-          
+          {/* Micro-rule */}
+          <div className="flex items-center gap-2 mb-1">
+            <div className="w-8 h-px" style={{ background: 'rgba(200,75,92,0.30)' }} />
+            <motion.span
+              style={{ color: '#C84B5C', opacity: 0.50, fontSize: '9px' }}
+              animate={{ opacity: [0.28, 0.65, 0.28] }}
+              transition={{ duration: 2.8, repeat: Infinity }}
+            >✦</motion.span>
+            <div className="w-8 h-px" style={{ background: 'rgba(200,75,92,0.30)' }} />
+          </div>
+
+          <h1 className="heading-bubble leading-none">Dearly</h1>
+
           <motion.p
-            className="text-2xl md:text-3xl font-hand text-text-soft mb-12 max-w-2xl mx-auto leading-relaxed"
+            className="text-sm sm:text-base md:text-lg font-hand text-text-soft max-w-[260px] sm:max-w-sm leading-relaxed"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1.2, duration: 0.8 }}
+            transition={{ delay: 1.2, duration: 1 }}
           >
             A gentle place for your memories
           </motion.p>
-
-          <motion.div
-            className="flex flex-wrap gap-4 justify-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.5, duration: 0.8 }}
-          >
-            <button
-              onClick={() => {
-                const captureSection = document.getElementById('capture');
-                captureSection?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="btn-soft"
-            >
-              Begin
-            </button>
-            <button
-              onClick={() => navigate('/letters')}
-              className="btn-outline-soft"
-            >
-              Your Letters
-            </button>
-          </motion.div>
         </motion.div>
 
-        {/* Decorative curve */}
-        <motion.svg
-          viewBox="0 0 400 60"
-          className="mx-auto mt-16 w-64 opacity-20"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration: 2, delay: 2 }}
+        {/* ── CTAs ──────────────────────────────────────────────────────── */}
+        <motion.div
+          className="flex gap-3 justify-center w-full"
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.5, duration: 0.9 }}
         >
-          <motion.path
-            d="M 10 30 Q 100 10, 200 30 T 390 30"
-            stroke="currentColor"
-            strokeWidth="2"
-            fill="none"
-            strokeLinecap="round"
-            className="text-ink"
-          />
+          <motion.button
+            onClick={() => document.getElementById('capture')?.scrollIntoView({ behavior: 'smooth' })}
+            className="btn-soft min-h-[52px] px-8 flex-1 sm:flex-none sm:px-10"
+            whileTap={{ scale: 0.94 }}
+            whileHover={{ scale: 1.04 }}
+            style={{ boxShadow: '0 5px 24px rgba(200,75,92,0.40), 0 1px 4px rgba(200,75,92,0.18)' }}
+          >
+            Begin
+          </motion.button>
+          <motion.button
+            onClick={() => navigate('/letters')}
+            className="btn-outline-soft min-h-[52px] px-6 flex-1 sm:flex-none"
+            whileTap={{ scale: 0.94 }}
+            whileHover={{ scale: 1.04 }}
+          >
+            Your Letters
+          </motion.button>
+        </motion.div>
+
+        {/* Decorative wave */}
+        <motion.svg
+          viewBox="0 0 400 40"
+          className="w-28 sm:w-40 md:w-52"
+          style={{ opacity: 0 }}
+          animate={{ opacity: 0.16 }}
+          transition={{ duration: 3, delay: 2.2 }}
+        >
+          <path d="M 10 20 Q 100 5, 200 20 T 390 20" stroke="#C84B5C" strokeWidth="1.5" fill="none" strokeLinecap="round" />
         </motion.svg>
+
       </div>
     </section>
   );
