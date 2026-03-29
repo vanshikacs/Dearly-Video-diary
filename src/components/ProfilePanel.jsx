@@ -6,7 +6,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getProfile, saveProfile, saveProfileMusic, getProfileMusic } from '../utils/db';
-import { previewBuiltInTrack, stopPreview } from '../utils/audioEngine';
+import { previewBuiltInTrack, stopPreview } from '../utils/Audioengine';
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
